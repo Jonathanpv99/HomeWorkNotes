@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:iconifiedByDefault="false"
-            android:queryHint="search notes" />
+            android:queryHint="Buscar Notas" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_home"

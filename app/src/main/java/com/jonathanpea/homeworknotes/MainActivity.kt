@@ -84,6 +84,8 @@ class MainActivity : AppCompatActivity(), NotesAdapter.NotesItemclickListener, P
 
 
         }
+
+
         binding.searchview.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 return false
@@ -118,6 +120,8 @@ class MainActivity : AppCompatActivity(), NotesAdapter.NotesItemclickListener, P
 
         val popup = PopupMenu(this,cardView)
         popup.setOnMenuItemClickListener(this@MainActivity)
+        popup.inflate(R.menu.pop_up_menu)
+        popup.show()
 
     }
 
