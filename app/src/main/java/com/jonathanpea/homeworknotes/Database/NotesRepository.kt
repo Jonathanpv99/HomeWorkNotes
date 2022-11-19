@@ -2,7 +2,6 @@ package com.jonathanpea.homeworknotes.Database
 
 import androidx.lifecycle.LiveData
 import com.jonathanpea.homeworknotes.Models.Note
-import com.jonathanpea.homeworknotes.Models.NoteDAO
 
 class NotesRepository(private val noteDAO: NoteDAO) {
 

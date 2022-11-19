@@ -5,7 +5,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.jonathanpea.homeworknotes.Models.Note
-import com.jonathanpea.homeworknotes.Models.NoteDAO
 import com.jonathanpea.homeworknotes.utilies.DATABASE_NAME
 
 @Database(entities = arrayOf(Note::class), version =1, exportSchema = false)
