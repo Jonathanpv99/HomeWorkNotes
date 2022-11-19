@@ -21,16 +21,19 @@
             android:theme="?attr/actionBarTheme">
 
 
-                <ImageView
-                    android:id="@+id/img_acep"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_margin="12dp"
-                    android:padding="10dp"
-                    app:srcCompat="@drawable/ic_acep"
-                    tools:layout_editor_absoluteX="371dp"
-                    tools:layout_editor_absoluteY="16dp" />
+            <ImageView
+                android:id="@+id/img_acep"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="12dp"
+                android:padding="10dp"
+                app:srcCompat="@drawable/ic_acep"
+                tools:layout_editor_absoluteX="371dp"
+                tools:layout_editor_absoluteY="16dp" />
 
                 <ImageView
                     android:id="@+id/img_back"
