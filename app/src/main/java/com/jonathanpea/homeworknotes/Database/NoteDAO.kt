@@ -19,5 +19,6 @@ interface NoteDAO {
     fun getAllNotes() : LiveData<List<Note>>
 
     @Query("UPDATE notes_table set title = :title, note = :note WHERE id= :id")
-    suspend fun upgrade(id : Int?, title : String?, note : String?)
+    suspend fun upgrade(id : Int, title : String, note : String)
+
 }
