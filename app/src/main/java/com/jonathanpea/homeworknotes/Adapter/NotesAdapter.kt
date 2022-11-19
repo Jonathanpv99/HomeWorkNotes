@@ -42,7 +42,7 @@ class NotesAdapter(private val context : Context, val listener: NotesItemclickLi
             listener.onItemClicked(NotesList[holder.adapterPosition])
         }
 
-        holder.notes_layout.setOnClickListener {
+        holder.notes_layout.setOnLongClickListener {
             listener.onLongitemClicked(NotesList[holder.adapterPosition],holder.notes_layout)
             true
         }
@@ -84,7 +84,6 @@ class NotesAdapter(private val context : Context, val listener: NotesItemclickLi
     fun RandomColor() : Int{
 
         val List = ArrayList<Int>()
-        List.add(R.color.Color1)
         List.add(R.color.Color3)
         List.add(R.color.Color4)
         List.add(R.color.Color5)

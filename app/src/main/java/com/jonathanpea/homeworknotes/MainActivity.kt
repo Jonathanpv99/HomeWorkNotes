@@ -107,6 +107,7 @@ class MainActivity : AppCompatActivity(), NotesAdapter.NotesItemclickListener, P
 
     override fun onItemClicked(note: Note) {
         val intent = Intent(this@MainActivity, addNote::class.java)
+        selectedNote = note
         intent.putExtra("current_note",note)
         updateNote.launch(intent)
     }
