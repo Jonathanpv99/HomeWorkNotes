@@ -85,6 +85,14 @@ class MainActivity : AppCompatActivity(), NotesAdapter.NotesItemclickListener, P
 
         }
 
+        binding.btnTareas.setOnClickListener{
+
+            val intent = Intent(this,HomeworkActivity::class.java)
+            getcontent.launch(intent)
+
+
+        }
+
 
         binding.searchview.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(p0: String?): Boolean {
