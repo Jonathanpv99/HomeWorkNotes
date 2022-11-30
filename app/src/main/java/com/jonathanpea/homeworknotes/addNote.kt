@@ -64,6 +64,8 @@ class addNote : AppCompatActivity() {
             }
         }
 
+        
+
         binding.imgBack.setOnClickListener {
             onBackPressed()
         }

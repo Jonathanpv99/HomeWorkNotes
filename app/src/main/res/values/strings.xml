@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">HomeWorkNotes</string>
+    <string name="Titulo_Nota">Titulo de la Nota</string>
+    <string name="Contenido">contenido</string>
+
+    <string name="Titulo_Tarea">Titulo de la Tarea</string>
+
+
 </resources>
