@@ -19,6 +19,7 @@ android {
     }
 
 
+
     buildTypes {
         release {
             minifyEnabled false
@@ -37,6 +38,7 @@ android {
         jvmTarget = '1.8'
     }
 }
+
 
 dependencies {
 
