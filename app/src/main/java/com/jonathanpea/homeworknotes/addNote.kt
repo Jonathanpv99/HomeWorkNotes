@@ -1,10 +1,16 @@
 package com.jonathanpea.homeworknotes
 
 import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.jonathanpea.homeworknotes.Models.Note
 import com.jonathanpea.homeworknotes.databinding.ActivityAddNoteBinding
 import com.jonathanpea.homeworknotes.databinding.ActivityMainBinding
@@ -32,6 +38,13 @@ class addNote : AppCompatActivity() {
 
         }catch (e : Exception){
             e.printStackTrace()
+        }
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val importancia = NotificationManager.IMPORTANCE_HIGH
+            val chanel = NotificationChannel(channelID,"canal1",importancia)
+            val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            manager.createNotificationChannel(chanel)
         }
 
         binding.imgAcep.setOnClickListener{
@@ -62,6 +75,14 @@ class addNote : AppCompatActivity() {
                 Toast.makeText(this@addNote,"Porfavor ingresa los datos",Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+
+            val notificacion = NotificationCompat.Builder(this, channelID).also { noti->
+                noti.setContentTitle("Nueva Nota agregada: "+binding.edtTitle.text.toString())
+                noti.setContentText(binding.edtNote.text.toString())
+                noti.setSmallIcon(R.drawable.ic_notifi)
+            }.build()
+            val notificationManager = NotificationManagerCompat.from(applicationContext)
+            notificationManager.notify(1,notificacion)
         }
 
         

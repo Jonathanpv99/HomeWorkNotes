@@ -10,4 +10,5 @@ class HomeWork (
     @ColumnInfo(name = "title") val title: String?,
     @ColumnInfo(name = "description") val desc : String?,
     @ColumnInfo(name = "date") val date: String?
+
 ): java.io.Serializable
