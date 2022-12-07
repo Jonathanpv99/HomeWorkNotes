@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".addNote">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:background="@color/Color2"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme">
+
+
+            <ImageView
+                android:id="@+id/img_acep"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="12dp"
+                android:padding="10dp"
+                app:srcCompat="@drawable/ic_acep"
+                tools:layout_editor_absoluteX="371dp"
+                tools:layout_editor_absoluteY="16dp" />
+
+            <ImageView
+                android:id="@+id/img_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="14dp"
+                android:padding="8dp"
+                app:srcCompat="@drawable/ic_arrow"
+                tools:layout_editor_absoluteX="33dp"
+                tools:layout_editor_absoluteY="16dp" />
+
+
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/edt_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="0dp"
+            android:ems="10"
+            android:hint="@string/Titulo_Nota"
+            android:inputType="textPersonName"
+            android:textSize="26sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="93dp" />
+
+        <EditText
+            android:id="@+id/edt_Note"
+            android:layout_width="match_parent"
+            android:layout_height="569dp"
+            android:layout_gravity="top"
+            android:layout_marginTop="26dp"
+            android:background="@null"
+            android:ems="10"
+            android:gravity="top|start"
+            android:hint="@string/Contenido"
+            android:inputType="textMultiLine"
+            android:lines="20"
+            android:lineSpacingMultiplier="1.8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="170dp" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>
+
+
+
+

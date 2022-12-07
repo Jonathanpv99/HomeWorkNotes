@@ -4,6 +4,8 @@
     <string name="Contenido">contenido</string>
 
     <string name="Titulo_Tarea">Titulo de la Tarea</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

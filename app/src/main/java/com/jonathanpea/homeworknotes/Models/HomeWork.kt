@@ -9,6 +9,7 @@ class HomeWork (
     @PrimaryKey(autoGenerate = true) val id: Int?,
     @ColumnInfo(name = "title") val title: String?,
     @ColumnInfo(name = "description") val desc : String?,
-    @ColumnInfo(name = "date") val date: String?
-
+    @ColumnInfo(name = "date") val date: String?,
+    @ColumnInfo(name = "uriF") val uriF: String?,
+    @ColumnInfo(name = "uriV") val uriV: String?
 ): java.io.Serializable

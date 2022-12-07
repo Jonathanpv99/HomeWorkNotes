@@ -17,6 +17,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.FileProvider
+import androidx.core.content.getSystemService
+import androidx.core.net.toUri
+import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 import com.jonathanpea.homeworknotes.Models.HomeWork
 import com.jonathanpea.homeworknotes.databinding.ActivityAddHomeBinding
 import java.io.File
@@ -31,23 +35,33 @@ class addHomework : AppCompatActivity(), View.OnTouchListener{
     private lateinit var old_home : HomeWork
     var isUpdate = false
 
+    private lateinit var calendar : Calendar
+    private lateinit var picker : MaterialTimePicker
+    private lateinit var alarmManager: AlarmManager
+    private lateinit var pendingIntent: PendingIntent
+
     private val REQUEST_VIDEO_CAPTURE: Int = 1001
     lateinit var currentVideoPath: String
-    lateinit var photoURI: Uri
+    var photoURI: Uri ="".toUri()
+    var urif: String=""
+    var uriv: String=""
     private val REQUEST_IMAGE_CAPTURE: Int = 1000
     lateinit var mediaController: MediaController
     //lateinit var mediaPlayer: MediaPlayer
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityAddHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        createNotifiChanel()
         try {
             old_home = intent.getSerializableExtra("current_home") as HomeWork
             binding.edtTitle.setText(old_home.title)
             binding.edtNote.setText(old_home.desc)
+            binding.foto.setImageURI(old_home.uriF?.toUri())
+            binding.videoView.setVideoURI(old_home.uriV?.toUri())
             isUpdate = true
 
         }catch (e : Exception){
@@ -73,11 +87,11 @@ class addHomework : AppCompatActivity(), View.OnTouchListener{
 
                 if(isUpdate){
                     home = HomeWork(
-                        old_home.id,title,note_desc,formatter.format(Date())
+                        old_home.id,title,note_desc,formatter.format(Date()),urif,uriv
                     )
                 }else{
                     home = HomeWork(
-                        null,title,note_desc,formatter.format(Date())
+                        null,title,note_desc,formatter.format(Date()),urif,uriv
                     )
                 }
 
@@ -107,13 +121,12 @@ class addHomework : AppCompatActivity(), View.OnTouchListener{
         }
 
         //Notificaciones
-        createNotificationChanel()
         binding.btnNotifi.setOnClickListener{
             val note_desc = binding.edtNote.text.toString()
             val title = binding.edtTitle.text.toString()
 
             if(title.isNotEmpty() && note_desc.isNotEmpty()){
-                scheduleNotification()
+                generarAlarma()
             }else{
                 Toast.makeText(this@addHomework,"Ingresa los datos antes de la nitificacion", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -186,79 +199,89 @@ class addHomework : AppCompatActivity(), View.OnTouchListener{
 
             }
         }
-    }
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun scheduleNotification() {
-        val intent = Intent(applicationContext, Notification::class.java)
-        val title = binding.edtTitle.text.toString()
-        val message = binding.edtNote.text.toString()
-        intent.putExtra(titleExtra,title)
-        intent.putExtra(messageExtra,message)
-
-        val pendingIntent = PendingIntent.getBroadcast(
-            applicationContext,
-            notificationID,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
-
-        val time = getTime()
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            progrAlamar(time,pendingIntent)
+        binding.btnFotoG.setOnClickListener{
+            val intent :Intent
+            if(Build.VERSION.SDK_INT<19){
+                intent =Intent()
+                intent.setAction(Intent.ACTION_GET_CONTENT)
+                intent.setType("image/*")
+                    startActivityForResult(intent,111)
+            }else{
+                intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+                intent.addCategory(Intent.CATEGORY_OPENABLE)
+                intent.setType("image/*")
+                startActivityForResult(Intent.createChooser(intent, "foto"), 111)
+            }
         }
-        showAlert(time,title,message)
+
+
+        binding.btnVideoG.setOnClickListener{
+            val intent :Intent
+            if(Build.VERSION.SDK_INT<19){
+                intent =Intent()
+                intent.setAction(Intent.ACTION_GET_CONTENT)
+                intent.setType("video/*")
+                startActivityForResult(intent,111)
+            }else{
+                intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+                intent.addCategory(Intent.CATEGORY_OPENABLE)
+                intent.setType("video/*")
+                startActivityForResult(Intent.createChooser(intent, "video"), 222)
+            }
+        }
+
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
-    private fun progrAlamar(time: Long, pendingIntent: PendingIntent?) {
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setExact (
-            AlarmManager.RTC_WAKEUP,
-            time,
-            pendingIntent
-        )
-    }
 
-    private fun showAlert(time: Long, title: String, message: String) {
-        val date = Date(time)
-        val dateFormat = android.text.format.DateFormat.getLongDateFormat(applicationContext)
-        val timeFormat =  android.text.format.DateFormat.getTimeFormat(applicationContext)
 
-        AlertDialog.Builder(this)
-            .setTitle("Alert Tareas")
-            .setMessage("title: " + title+
-                    "\n Message: "+message+
-                    "\n At: "+dateFormat.format(date)+ " "+timeFormat.format(date))
-            .setPositiveButton("aceptar"){_,_->}
-            .show()
-    }
+
+
+   //------------------------------Alarma-----------------------------------------------------------
+
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun getTime(): Long{
-        val minute = binding.timePicker.minute
-        val  hour =binding.timePicker.hour
-        val day = binding.datePicker.dayOfMonth
-        val month = binding.datePicker.month
-        val year = binding.datePicker.year
+    private fun generarAlarma(){
 
-        val calendar = Calendar.getInstance()
-        calendar.set(year,month,day,hour,minute)
-        return calendar.timeInMillis
+            calendar = Calendar.getInstance()
+            calendar[Calendar.HOUR_OF_DAY] = binding.timePicker.hour
+            calendar[Calendar.MINUTE] = binding.timePicker.minute
+            calendar[Calendar.SECOND] = 0
+            calendar[Calendar.MILLISECOND] = 0
+
+        setAlarm()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun createNotificationChanel() {
-        val name = "canal notify"
-        val desc = "descripcion del canal"
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val chanel = NotificationChannel(channelID, name, importance)
-        chanel.description=desc
-        val notificationmanager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        notificationmanager.createNotificationChannel(chanel)
+    private fun createNotifiChanel(){
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+            val name : CharSequence = "AlarmaChanel"
+            val description = "chanel for alarm"
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel("Alarma",name,importance)
+            channel.description =description
+            val notificationManager = getSystemService(
+                NotificationManager::class.java
+            )
+            notificationManager.createNotificationChannel(channel)
+        }
     }
+
+    private fun setAlarm(){
+        alarmManager = getSystemService(ALARM_SERVICE)as AlarmManager
+        val intent = Intent(this,AlarmReceiver::class.java)
+
+        pendingIntent = PendingIntent.getBroadcast(this,0,intent,0)
+
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP,calendar.timeInMillis,
+            AlarmManager.INTERVAL_DAY,pendingIntent
+        )
+
+        Toast.makeText(this,"Alarma exitosa",Toast.LENGTH_SHORT).show()
+    }
+
+
 
     //---------------------------------------------------------------------------media-----------------------------------------------
     lateinit var currentPhotoPath: String
@@ -280,7 +303,7 @@ class addHomework : AppCompatActivity(), View.OnTouchListener{
         }
     }
 
-
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
@@ -294,20 +317,51 @@ class addHomework : AppCompatActivity(), View.OnTouchListener{
             binding.foto.setImageURI(
                 photoURI
             )
+            urif=photoURI.toString()
         }else if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK){
 
 
 
             //binding.videoView.setMediaController(mediaController)
             binding.videoView.setVideoURI(photoURI)
+            uriv=photoURI.toString()
 
-            binding.videoView.start()
+           // binding.videoView.start()
             //mediaController.show()
 
 
 
             /*mediaController.setEnabled(true);
             mediaController.show();*/
+        }else if(requestCode == 111 && resultCode == Activity.RESULT_OK){
+            applicationContext.grantUriPermission(applicationContext.packageName,photoURI,Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            data?.data?.also { uri ->
+
+                val takeflags : Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+
+                photoURI=uri
+
+                applicationContext.contentResolver.takePersistableUriPermission(photoURI,takeflags)
+
+
+            }
+            binding.foto.setImageURI(photoURI)
+            urif=photoURI.toString()
+
+        }else if(requestCode == 222 && resultCode == Activity.RESULT_OK){
+            applicationContext.grantUriPermission(applicationContext.packageName,photoURI,Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            data?.data?.also { uri ->
+
+                val takeflags : Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+
+                photoURI=uri
+                uriv=photoURI.toString()
+
+                applicationContext.contentResolver.takePersistableUriPermission(photoURI,takeflags)
+
+
+            }
+            binding.videoView.setVideoURI(photoURI)
         }
 
     }
