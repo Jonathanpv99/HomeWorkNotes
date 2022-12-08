@@ -75,7 +75,6 @@
                 android:resource="@xml/file_paths" />
         </provider>
         <receiver android:name=".AlarmReceiver"/>
-        <receiver android:name=".Notification"></receiver>
 
 
     </application>

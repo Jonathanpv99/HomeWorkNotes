@@ -121,7 +121,7 @@ class addHomework : AppCompatActivity(), View.OnTouchListener{
         }
 
         //Notificaciones
-        binding.btnNotifi.setOnClickListener{
+        binding.btnCalendar.setOnClickListener{
             val note_desc = binding.edtNote.text.toString()
             val title = binding.edtTitle.text.toString()
 
@@ -133,6 +133,10 @@ class addHomework : AppCompatActivity(), View.OnTouchListener{
             }
 
 
+        }
+
+        binding.btnNotifi.setOnClickListener {
+            setAlarm()
         }
 
 
@@ -241,16 +245,29 @@ class addHomework : AppCompatActivity(), View.OnTouchListener{
    //------------------------------Alarma-----------------------------------------------------------
 
 
-    @RequiresApi(Build.VERSION_CODES.M)
+
     private fun generarAlarma(){
+        picker = MaterialTimePicker.Builder()
+            .setTimeFormat(TimeFormat.CLOCK_12H)
+            .setHour(12)
+            .setMinute(0)
+            .setTitleText("Selecciona la alarma")
+            .build()
 
-            calendar = Calendar.getInstance()
-            calendar[Calendar.HOUR_OF_DAY] = binding.timePicker.hour
-            calendar[Calendar.MINUTE] = binding.timePicker.minute
-            calendar[Calendar.SECOND] = 0
-            calendar[Calendar.MILLISECOND] = 0
+        picker.show(supportFragmentManager,"Alarma")
 
-        setAlarm()
+        picker.addOnPositiveButtonClickListener {
+
+             calendar = Calendar.getInstance()
+                calendar[Calendar.HOUR_OF_DAY] = picker.hour
+                calendar[Calendar.MINUTE] = picker.minute
+                calendar[Calendar.SECOND] = 0
+                calendar[Calendar.MILLISECOND] = 0
+
+
+        }
+
+
     }
 
     private fun createNotifiChanel(){
@@ -268,18 +285,54 @@ class addHomework : AppCompatActivity(), View.OnTouchListener{
     }
 
     private fun setAlarm(){
-        alarmManager = getSystemService(ALARM_SERVICE)as AlarmManager
+        alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
         val intent = Intent(this,AlarmReceiver::class.java)
 
         pendingIntent = PendingIntent.getBroadcast(this,0,intent,0)
 
         alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP,calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,pendingIntent
+            AlarmManager.INTERVAL_HALF_HOUR,pendingIntent
         )
 
         Toast.makeText(this,"Alarma exitosa",Toast.LENGTH_SHORT).show()
     }
+//------------------Alarma2--------------------------------------------------
+
+    private fun setAlarmChingon(callback: (Long) -> Unit){
+        Calendar.getInstance().apply {
+            this.set(Calendar.SECOND,0)
+            this.set(Calendar.MILLISECOND,0)
+            DatePickerDialog(
+                this@addHomework,
+                0,
+                { _, year, month, dayOfMonth ->
+                    this.set(Calendar.YEAR, year)
+                    this.set(Calendar.MONTH,  month)
+                    this.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+                    TimePickerDialog(
+                        this@addHomework,
+                        0,
+                        {_,hour,min ->
+                            this.set(Calendar.HOUR_OF_DAY, hour)
+                            this.set(Calendar.MINUTE, min)
+                            callback(this.timeInMillis)
+                        },
+                        this.get(Calendar.HOUR_OF_DAY),
+                        this.get(Calendar.MINUTE),
+                        false
+                    ).show()
+
+                },
+                this.get(Calendar.YEAR),
+                this.get(Calendar.MONTH),
+                this.get(Calendar.DAY_OF_MONTH)
+            ).show()
+
+        }
+    }
+
 
 
 
